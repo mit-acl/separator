@@ -12,7 +12,7 @@ GLPK Reference Manual (and API documentation) is available [here](http://www.chi
 In CMakeLists.txt add the library name to `find_package()`.
 
 ```cmake
-find_package(catkin REQUIRED COMPONENTS motoralloc)
+find_package(catkin REQUIRED COMPONENTS separator)
 ```
 
 Example: see test.cpp

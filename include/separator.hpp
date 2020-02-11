@@ -12,7 +12,7 @@ class Separator
 public:
   Separator(double weight_n1, double weight_n2, double weight_n3);
 
-  bool solveModel(Eigen::Vector3d& solution, const std::vector<Eigen::Vector3d>& pointsA,
+  bool solveModel(Eigen::Vector3d& solution, double d, const std::vector<Eigen::Vector3d>& pointsA,
                   const std::vector<Eigen::Vector3d>& pointsB);
 
   // void deleteModel();

@@ -12,14 +12,14 @@ namespace separator
 Separator::Separator(double weight_n1, double weight_n2, double weight_n3)
 {
   glp_init_smcp(&params_);
-  params_.msg_lev = GLP_MSG_ALL;  // 1=no output.  GLP_MSG_ALL;
+  params_.msg_lev = 1;  // 1=no output.  GLP_MSG_ALL;
 
   weight_n1_ = weight_n1;
   weight_n2_ = weight_n2;
   weight_n3_ = weight_n3;
 };
 
-bool Separator::solveModel(Eigen::Vector3d& solutionN, double solutionD, const std::vector<Eigen::Vector3d>& pointsA,
+bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const std::vector<Eigen::Vector3d>& pointsA,
                            const std::vector<Eigen::Vector3d>& pointsB)
 {
   lp_ = glp_create_prob();
@@ -30,7 +30,7 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double solutionD, const s
   glp_add_rows(lp_, pointsA.size() + pointsB.size() + 1);
   int row = 1;
 
-  double epsilon = 0.001;
+  double epsilon = 0.0;
 
   // n (the solution) will point to the pointsA
   for (auto pointsA_i : pointsA)
@@ -118,19 +118,22 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double solutionD, const s
   solutionN(1) = glp_get_col_prim(lp_, 2);
   solutionN(2) = glp_get_col_prim(lp_, 3);
   solutionD = glp_get_col_prim(lp_, 4);
+  // std::cout << "solutionD= " << solutionD << std::endl;
   // printf("z = %g; n1 = %g; n2 = %g; n3 = %g\n", z, n1, n2, n3);
 
   int status = glp_get_status(lp_);
 
-  if ((status != GLP_OPT) && (status != GLP_FEAS))
-  {
-    glp_write_lp(lp_, NULL, "/home/jtorde/Desktop/ws/src/faster/faster/my_model2.txt");
-  }
+  /*  if ((status != GLP_OPT) && (status != GLP_FEAS))
+    {
+      glp_write_lp(lp_, NULL, "/home/jtorde/Desktop/ws/src/faster/faster/my_model2.txt");
+    }*/
 
   glp_delete_prob(lp_);
   glp_free_env();
 
-  if (status == GLP_OPT || status == GLP_FEAS)
+  bool degenerateSolution = (solutionN.norm() < 0.000001);  // solution is [0 0 0]
+
+  if ((status == GLP_OPT || status == GLP_FEAS) && !degenerateSolution)
   {
     return true;
   }

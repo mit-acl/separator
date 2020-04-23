@@ -4,36 +4,29 @@
 
 int main()
 {
-  separator::Separator separator_solver(1.0, 1.0, 1.0);
+  separator::Separator separator_solver(0.0, 0.0, 0.0);
 
   std::vector<Eigen::Vector3d> pointsA;
   std::vector<Eigen::Vector3d> pointsB;
 
-  pointsA.push_back(Eigen::Vector3d(12.2, 11.4, 0));
-  pointsA.push_back(Eigen::Vector3d(12, 11.6, 2));
-  pointsA.push_back(Eigen::Vector3d(12.5, 11.7, 0));
-  pointsA.push_back(Eigen::Vector3d(12, 11.9, 0));
-  pointsA.push_back(Eigen::Vector3d(12.5, 11.4, 0));
-  pointsA.push_back(Eigen::Vector3d(12.5, 11.7, 2));
-  pointsA.push_back(Eigen::Vector3d(12.5, 11.4, 2));
-  pointsA.push_back(Eigen::Vector3d(12.2, 11.4, 2));
-  pointsA.push_back(Eigen::Vector3d(12, 11.9, 2));
-  pointsA.push_back(Eigen::Vector3d(12.3, 11.8, 0));
-  pointsA.push_back(Eigen::Vector3d(12, 11.6, 0));
-  pointsA.push_back(Eigen::Vector3d(12.3, 11.9, 0));
-  pointsA.push_back(Eigen::Vector3d(12.3, 11.9, 2));
-  pointsA.push_back(Eigen::Vector3d(12.4, 11.8, 0));
-  pointsA.push_back(Eigen::Vector3d(12.3, 11.8, 2));
-  pointsA.push_back(Eigen::Vector3d(12.4, 11.8, 2));
+  pointsA.push_back(Eigen::Vector3d(1.3901, 1.336, -5.578));
+  pointsA.push_back(Eigen::Vector3d(1.7901, 1.336, -5.578));
+  pointsA.push_back(Eigen::Vector3d(1.7901, 1.736, 6.422));
+  pointsA.push_back(Eigen::Vector3d(1.7901, 1.336, 6.422));
+  pointsA.push_back(Eigen::Vector3d(1.7901, 1.736, -5.578));
+  pointsA.push_back(Eigen::Vector3d(1.3901, 1.736, 6.422));
+  pointsA.push_back(Eigen::Vector3d(1.3901, 1.736, -5.578));
+  pointsA.push_back(Eigen::Vector3d(1.3901, 1.336, 6.422));
 
-  pointsB.push_back(Eigen::Vector3d(9.91, 9.86, 0.982));
-  pointsB.push_back(Eigen::Vector3d(9.91, 9.86, 0.982));
-  pointsB.push_back(Eigen::Vector3d(9.91, 9.86, 0.982));
-  pointsB.push_back(Eigen::Vector3d(9.91, 9.86, 0.982));
+  pointsB.push_back(Eigen::Vector3d(4.4376, 4.6171, 1));
+  pointsB.push_back(Eigen::Vector3d(4.4376, 4.6171, 1));
+  pointsB.push_back(Eigen::Vector3d(4.4376, 4.6171, 1));
+  pointsB.push_back(Eigen::Vector3d(4.4376, 4.6171, 1));
 
   Eigen::Vector3d n;
   double d;
   bool solved = separator_solver.solveModel(n, d, pointsA, pointsB);
+  std::cout << "solved= " << solved << std::endl;
   std::cout << "n= " << n.transpose() << std::endl;
   std::cout << "d= " << d << std::endl;
 

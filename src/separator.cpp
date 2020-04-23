@@ -30,23 +30,33 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const 
   glp_add_rows(lp_, pointsA.size() + pointsB.size() + 1);
   int row = 1;
 
-  double epsilon = 0.0;
+  // See here why we can use an epsilon of 1.0:
+  // http://www.joyofdata.de/blog/testing-linear-separability-linear-programming-r-glpk/
+  // This also allows you to avoid checking if norm(n)==0 at the end (see degenerateSolution commented out below)
+  double epsilon = 1.0;
 
   // n (the solution) will point to the pointsA
+
+  // std::cout << "Using PointsA=" << std::endl;
+
   for (auto pointsA_i : pointsA)
   {
+    // std::cout << pointsA_i.transpose() << std::endl;
     // glp_set_row_name(lp, r, "p");
-    glp_set_row_bnds(lp_, row, GLP_LO, epsilon, 0.0);  //>=0.0001   n'x+d >=0
+    glp_set_row_bnds(lp_, row, GLP_LO, epsilon, 0.0);  // n'xA+d>=epsilon
     row++;
   }
+  //  std::cout << "Using PointsB=" << std::endl;
   for (auto pointsB_i : pointsB)
   {
+    // std::cout << pointsB_i.transpose() << std::endl;
+
     // glp_set_row_name(lp, r, "p");
-    glp_set_row_bnds(lp_, row, GLP_UP, 0.0, -epsilon);  //<=0.0   n'x+d <=0
+    glp_set_row_bnds(lp_, row, GLP_UP, 0.0, -epsilon);  //<=0.0   n'xB+d <=-epsilon
     row++;
   }
 
-  glp_set_row_bnds(lp_, row, GLP_UP, 0.0, 3.0);  // n1+n2+n3<=3 //To prevent unbounded solutions
+  // glp_set_row_bnds(lp_, row, GLP_UP, 0.0, 3.0);  // n1+n2+n3<=3 //To prevent unbounded solutions
   row++;
 
   ///
@@ -123,6 +133,39 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const 
 
   int status = glp_get_status(lp_);
 
+  // std::cout << "status= " << status << std::endl;
+
+  // /*  GLP_OPT — solution is optimal;
+  //   GLP_FEAS — solution is feasible;
+  //   GLP_INFEAS — solution is infeasible;
+  //   GLP_NOFEAS — problem has no feasible solution;
+  //   GLP_UNBND — problem has unbounded solution;
+  //   GLP_UNDEF — solution is undefined.*/
+
+  // switch (status)
+  // {
+  //   case GLP_OPT:
+  //     std::cout << "status = GLP_OPT" << std::endl;
+  //     break;
+  //   case GLP_FEAS:
+  //     std::cout << "status = GLP_FEAS" << std::endl;
+  //     break;
+  //   case GLP_INFEAS:
+  //     std::cout << "status = GLP_INFEAS" << std::endl;
+  //     break;
+  //   case GLP_NOFEAS:
+  //     std::cout << "status = GLP_NOFEAS" << std::endl;
+  //     break;
+  //   case GLP_UNBND:
+  //     std::cout << "status = GLP_UNBND" << std::endl;
+  //     break;
+  //   case GLP_UNDEF:
+  //     std::cout << "status = GLP_UNDEF" << std::endl;
+  //     break;
+  //   default:
+  //     std::cout << "This code doesn't exist!!" << std::endl;
+  // }
+
   /*  if ((status != GLP_OPT) && (status != GLP_FEAS))
     {
       glp_write_lp(lp_, NULL, "/home/jtorde/Desktop/ws/src/faster/faster/my_model2.txt");
@@ -131,9 +174,11 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const 
   glp_delete_prob(lp_);
   glp_free_env();
 
-  bool degenerateSolution = (solutionN.norm() < 0.000001);  // solution is [0 0 0]
+  // std::cout << "solutionN.norm()=" << solutionN.norm() << std::endl;
 
-  if ((status == GLP_OPT || status == GLP_FEAS) && !degenerateSolution)
+  // bool degenerateSolution = (solutionN.norm() < 0.000001);  // solution is [0 0 0]
+
+  if ((status == GLP_OPT || status == GLP_FEAS))  //&& !degenerateSolution
   {
     return true;
   }

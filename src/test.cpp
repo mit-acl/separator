@@ -4,7 +4,7 @@
 
 int main()
 {
-  separator::Separator separator_solver(0.0, 0.0, 0.0);
+  separator::Separator separator_solver;  // 0.0, 0.0, 0.0
 
   std::vector<Eigen::Vector3d> pointsA;
   std::vector<Eigen::Vector3d> pointsB;

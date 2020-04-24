@@ -9,14 +9,14 @@
 
 namespace separator
 {
-Separator::Separator(double weight_n1, double weight_n2, double weight_n3)
+Separator::Separator()  // double weight_n1, double weight_n2, double weight_n3
 {
   glp_init_smcp(&params_);
   params_.msg_lev = 1;  // 1=no output.  GLP_MSG_ALL;
 
-  weight_n1_ = weight_n1;
-  weight_n2_ = weight_n2;
-  weight_n3_ = weight_n3;
+  weight_n1_ = 0.0;  // weight_n1;
+  weight_n2_ = 0.0;  // weight_n2;
+  weight_n3_ = 0.0;  // weight_n3;
 };
 
 bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const std::vector<Eigen::Vector3d>& pointsA,

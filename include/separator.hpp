@@ -15,6 +15,10 @@ public:
   bool solveModel(Eigen::Vector3d& solution, double& d, const std::vector<Eigen::Vector3d>& pointsA,
                   const std::vector<Eigen::Vector3d>& pointsB);
 
+  bool solveModel(Eigen::Vector3d& solutionN, double& solutionD,
+                  const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsA,
+                  const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsB);
+
   // void deleteModel();
 
 private:

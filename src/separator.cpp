@@ -2,6 +2,8 @@
 #include <math.h>
 #include <glpk.h> /* GNU GLPK linear/mixed integer solver */
 
+#include <chrono>
+
 #include "separator.hpp"
 #include <iostream>
 
@@ -22,12 +24,32 @@ Separator::Separator()  // double weight_n1, double weight_n2, double weight_n3
 bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const std::vector<Eigen::Vector3d>& pointsA,
                            const std::vector<Eigen::Vector3d>& pointsB)
 {
+  Eigen::Matrix<double, 3, Eigen::Dynamic> pointsA_matrix(3, pointsA.size());
+  for (int i = 0; i < pointsA.size(); i++)
+  {
+    pointsA_matrix.col(i) = pointsA[i];
+  }
+
+  Eigen::Matrix<double, 3, Eigen::Dynamic> pointsB_matrix(3, pointsB.size());
+
+  for (int i = 0; i < pointsB.size(); i++)
+  {
+    pointsB_matrix.col(i) = pointsB[i];
+  }
+
+  return solveModel(solutionN, solutionD, pointsA_matrix, pointsB_matrix);
+}
+
+bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
+                           const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsA,
+                           const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsB)
+{
   lp_ = glp_create_prob();
   glp_set_prob_name(lp_, "separator");
   glp_set_obj_dir(lp_, GLP_MAX);
 
   /* fill problem */
-  glp_add_rows(lp_, pointsA.size() + pointsB.size() + 1);
+  glp_add_rows(lp_, pointsA.cols() + pointsB.cols() + 1);
   int row = 1;
 
   // See here why we can use an epsilon of 1.0:
@@ -39,18 +61,15 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const 
 
   // std::cout << "Using PointsA=" << std::endl;
 
-  for (auto pointsA_i : pointsA)
+  for (int i = 0; i < pointsA.cols(); i++)
   {
-    // std::cout << pointsA_i.transpose() << std::endl;
     // glp_set_row_name(lp, r, "p");
     glp_set_row_bnds(lp_, row, GLP_LO, epsilon, 0.0);  // n'xA+d>=epsilon
     row++;
   }
   //  std::cout << "Using PointsB=" << std::endl;
-  for (auto pointsB_i : pointsB)
+  for (int i = 0; i < pointsB.cols(); i++)
   {
-    // std::cout << pointsB_i.transpose() << std::endl;
-
     // glp_set_row_name(lp, r, "p");
     glp_set_row_bnds(lp_, row, GLP_UP, 0.0, -epsilon);  //<=0.0   n'xB+d <=-epsilon
     row++;
@@ -81,26 +100,26 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const 
 
   int r = 1;
   row = 1;
-  for (auto pointsA_i : pointsA)
+  for (int i = 0; i < pointsA.cols(); i++)
   {
-    ia_[r] = row, ja_[r] = 1, ar_[r] = pointsA_i.x(); /* a[1,1] = 1 */
+    ia_[r] = row, ja_[r] = 1, ar_[r] = pointsA(0, i); /* a[1,1] = 1 */
     r++;
-    ia_[r] = row, ja_[r] = 2, ar_[r] = pointsA_i.y();  // a[1,2] = 2
+    ia_[r] = row, ja_[r] = 2, ar_[r] = pointsA(1, i);  // a[1,2] = 2
     r++;
-    ia_[r] = row, ja_[r] = 3, ar_[r] = pointsA_i.z();  // a[1,3] = 2
+    ia_[r] = row, ja_[r] = 3, ar_[r] = pointsA(2, i);  // a[1,3] = 2
     r++;
     ia_[r] = row, ja_[r] = 4, ar_[r] = 1.0;  // a[1,4] = 1
     r++;
     row++;
   }
 
-  for (auto pointsB_i : pointsB)
+  for (int i = 0; i < pointsB.cols(); i++)
   {
-    ia_[r] = row, ja_[r] = 1, ar_[r] = pointsB_i.x();  // a[1,1] = 1
+    ia_[r] = row, ja_[r] = 1, ar_[r] = pointsB(0, i);  // a[1,1] = 1
     r++;
-    ia_[r] = row, ja_[r] = 2, ar_[r] = pointsB_i.y();  // a[1,2] = 2
+    ia_[r] = row, ja_[r] = 2, ar_[r] = pointsB(1, i);  // a[1,2] = 2
     r++;
-    ia_[r] = row, ja_[r] = 3, ar_[r] = pointsB_i.z();  // a[1,3] = 2
+    ia_[r] = row, ja_[r] = 3, ar_[r] = pointsB(2, i);  // a[1,3] = 2
     r++;
     ia_[r] = row, ja_[r] = 4, ar_[r] = 1.0;  // a[1,4] = 2
     r++;
@@ -121,7 +140,15 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const 
   // glp_write_lp(lp_, NULL, "/home/jtorde/Desktop/ws/src/faster/faster/my_model.txt");
 
   /* solve problem */
+  // auto start = std::chrono::high_resolution_clock::now();
   glp_simplex(lp_, &params_);
+  // auto elapsed = std::chrono::high_resolution_clock::now() - start;
+  // std::cout << "Solving an LP took " << std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() /
+  // 1000.0
+  //           << " ms" << std::endl;
+
+  // std::cout << std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000.0 << std::endl;
+
   /* recover and display results */
   double z = glp_get_obj_val(lp_);
   solutionN(0) = glp_get_col_prim(lp_, 1);

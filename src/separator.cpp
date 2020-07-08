@@ -44,12 +44,15 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
                            const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsA,
                            const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsB)
 {
+  // std::cout << "pointsA_matrix.cols()=" << pointsA.cols() << std::endl;
+  // std::cout << "pointsB_matrix.cols()=" << pointsB.cols() << std::endl;
+
   lp_ = glp_create_prob();
   glp_set_prob_name(lp_, "separator");
   glp_set_obj_dir(lp_, GLP_MAX);
 
   /* fill problem */
-  glp_add_rows(lp_, pointsA.cols() + pointsB.cols() + 1);
+  glp_add_rows(lp_, pointsA.cols() + pointsB.cols());
   int row = 1;
 
   // See here why we can use an epsilon of 1.0:
@@ -126,17 +129,18 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
     row++;
   }
 
-  ia_[r] = row, ja_[r] = 1, ar_[r] = 1;  // a[1,1] = 1
-  r++;
-  ia_[r] = row, ja_[r] = 2, ar_[r] = 1;  // a[1,2] = 1
-  r++;
-  ia_[r] = row, ja_[r] = 3, ar_[r] = 1;  // a[1,3] = 1
-  r++;
-  ia_[r] = row, ja_[r] = 4, ar_[r] = 0.0;  // a[1,4] = 0
-  r++;
-  row++;
+  // ia_[r] = row, ja_[r] = 1, ar_[r] = 1;  // a[1,1] = 1
+  // r++;
+  // ia_[r] = row, ja_[r] = 2, ar_[r] = 1;  // a[1,2] = 1
+  // r++;
+  // ia_[r] = row, ja_[r] = 3, ar_[r] = 1;  // a[1,3] = 1
+  // r++;
+  // ia_[r] = row, ja_[r] = 4, ar_[r] = 0.0;  // a[1,4] = 0
+  // r++;
+  // row++;
 
-  glp_load_matrix(lp_, r - 1, ia_, ja_, ar_);
+  glp_load_matrix(lp_, r - 1, ia_, ja_,
+                  ar_);  // need r-1 to substract from r++ in the last iteration of the previous loop
   // glp_write_lp(lp_, NULL, "/home/jtorde/Desktop/ws/src/faster/faster/my_model.txt");
 
   /* solve problem */

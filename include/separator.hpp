@@ -23,8 +23,8 @@ public:
 
 private:
   glp_prob* lp_;
-  int ia_[1 + 1000], ja_[1 + 1000];
-  double ar_[1 + 1000];
+  int ia_[10000], ja_[10000];  // TODO
+  double ar_[10000];           // TODO
   double weight_n1_ = 1.0;
   double weight_n2_ = 1.0;
   double weight_n3_ = 1.0;

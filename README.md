@@ -5,7 +5,7 @@ Separator Library
 
 The backened solver [GLPK](https://www.gnu.org/software/glpk/) can be installed by following the instructions located [here](https://en.wikibooks.org/wiki/GLPK/Linux_OS#Install).
 
-GLPK Reference Manual (and API documentation) is available [here](http://www.chiark.greenend.org.uk/doc/glpk-doc/glpk.pdf).
+GLPK Reference Manual (and its API documentation) is available [here](http://www.chiark.greenend.org.uk/doc/glpk-doc/glpk.pdf).
 
 ## Sample Usage (ROS / catkin)
 

@@ -1,3 +1,11 @@
+/* ----------------------------------------------------------------------------
+ * Copyright 2020, Jesus Tordesillas Torres, Aerospace Controls Laboratory
+ * Massachusetts Institute of Technology
+ * All Rights Reserved
+ * Authors: Jesus Tordesillas, et al.
+ * See LICENSE file for the license information
+ * -------------------------------------------------------------------------- */
+
 #include <time.h>
 #include <math.h>
 #include <glpk.h> /* GNU GLPK linear/mixed integer solver */
@@ -16,9 +24,9 @@ Separator::Separator()  // double weight_n1, double weight_n2, double weight_n3
   glp_init_smcp(&params_);
   params_.msg_lev = 1;  // 1=no output.  GLP_MSG_ALL;
 
-  weight_n1_ = 0.0;  // weight_n1;
-  weight_n2_ = 0.0;  // weight_n2;
-  weight_n3_ = 0.0;  // weight_n3;
+  weight_n1_ = 0.0;
+  weight_n2_ = 0.0;
+  weight_n3_ = 0.0;
 };
 
 bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const std::vector<Eigen::Vector3d>& pointsA,
@@ -129,16 +137,6 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
     row++;
   }
 
-  // ia_[r] = row, ja_[r] = 1, ar_[r] = 1;  // a[1,1] = 1
-  // r++;
-  // ia_[r] = row, ja_[r] = 2, ar_[r] = 1;  // a[1,2] = 1
-  // r++;
-  // ia_[r] = row, ja_[r] = 3, ar_[r] = 1;  // a[1,3] = 1
-  // r++;
-  // ia_[r] = row, ja_[r] = 4, ar_[r] = 0.0;  // a[1,4] = 0
-  // r++;
-  // row++;
-
   glp_load_matrix(lp_, r - 1, ia_, ja_,
                   ar_);  // need r-1 to substract from r++ in the last iteration of the previous loop
   // glp_write_lp(lp_, NULL, "/home/jtorde/Desktop/ws/src/faster/faster/my_model.txt");
@@ -216,9 +214,5 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
 
   return false;
 };
-
-/*void Separator::deleteModel(){
-
-};*/
 
 }  // namespace separator

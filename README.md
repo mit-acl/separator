@@ -1,7 +1,7 @@
 Separator Library
 ========================
 
-This library allows you to solve the LP to obtain the plane that separates two sets of points 3D. Unfeasibility of the problem means that the two sets of points are not linearly separable. Note that this librarly simply finds **one** of the possible planes that separate the two sets of points (i.e. it does not optimize the distance as in the [SVM problem](https://en.wikipedia.org/wiki/Support_vector_machine)).
+This library allows you to solve the LP to obtain the plane that separates two sets of points in 3D. Unfeasibility of the problem means that the two sets of points are not linearly separable. Note that this librarly simply finds **one** of the possible planes that separate the two sets of points (i.e. it does not optimize the distance as in the [SVM problem](https://en.wikipedia.org/wiki/Support_vector_machine)).
 
 One possible application of this library is to test if two polyhedra are in collision or not (by simply checking if the LP problem that separates its vertexes is feasible or not). In case of feasibility, a plane that separates these polyhedra will also be returned
 

@@ -31,4 +31,4 @@ find_package(catkin REQUIRED COMPONENTS separator)
 Example: see test.cpp
 
 ## Credits
-Part of the code is based on the ACL motoralloc library done by Brett Lopez
+Part of the code is based on the ACL [motoralloc library](https://gitlab.com/mit-acl/creare-labdrone/motoralloc).

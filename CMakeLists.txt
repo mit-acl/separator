@@ -48,6 +48,6 @@ add_dependencies(separator ${separator_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGE
 
 
 
-add_executable(test src/test.cpp)
-target_link_libraries(test PUBLIC separator)
-add_dependencies(test separator)
+add_executable(test_separator src/test_separator.cpp)
+target_link_libraries(test_separator PUBLIC separator)
+add_dependencies(test_separator separator)

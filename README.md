@@ -10,7 +10,7 @@ One possible application of this library is to test if two polyhedra are in coll
 
 ## Citation
 
-When using this library, please cite [this paper](https://www.google.com/):
+When using this library, please cite this paper (to appear):
 
 ```bibtex
 @article{tordesillas2020mader,

@@ -8,6 +8,19 @@ This library allows you to solve the Linear Program to obtain the plane that sep
 One possible application of this library is to test if two polyhedra are in collision or not (by simply checking if the LP problem that separates theirs vertexes is feasible or not). In case of feasibility, a plane that separates these polyhedra will also be returned
 
 
+## Citation
+
+When using this library, please cite [this paper](https://www.google.com/):
+
+```bibtex
+@article{tordesillas2020mader,
+  title={{MADER}: Trajectory Planner in Multi-Agent and Dynamic Environments},
+  author={Tordesillas, Jesus and How, Jonathan P},
+  journal={arXiv preprint},
+  year={2020}
+}
+```
+
 ## Instructions
 
 ```

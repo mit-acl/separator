@@ -1,7 +1,7 @@
 Separator Library
 ========================
 
-![](./imgs/polyhedra.png) 
+![](./imgs/polyhedra.png =250x) 
 
 This library allows you to solve the Linear Program to obtain the plane that separates two sets of points in 3D. Unfeasibility of the problem means that the two sets of points are not linearly separable. Note that this librarly simply finds **one** of the possible planes that separate the two sets of points (i.e. it does not optimize the distance as in the [SVM problem](https://en.wikipedia.org/wiki/Support_vector_machine)).
 

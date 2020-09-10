@@ -41,7 +41,7 @@ In its CMakeLists.txt add the library name to `find_package()`.
 find_package(catkin REQUIRED COMPONENTS separator)
 ```
 
-Example: see test.cpp
+Example: see test_separator.cpp
 
 ## Credits
 Part of the code is based on the ACL [motoralloc library](https://gitlab.com/mit-acl/creare-labdrone/motoralloc).

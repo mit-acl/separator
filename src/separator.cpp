@@ -92,7 +92,7 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
   ///
   glp_add_cols(lp_, 4);
 
-  // weights !=0 avoid the trivial solution (0,0,0)
+  // weights
   glp_set_col_name(lp_, 1, "n1");
   glp_set_col_bnds(lp_, 1, GLP_FR, 0.0, 0.0);  // Free
   glp_set_obj_coef(lp_, 1, weight_n1_);        // weight on n1

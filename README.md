@@ -44,6 +44,7 @@ find_package(catkin REQUIRED COMPONENTS separator)
 Example: see test_separator.cpp
 
 ## Details
+The reason behind the two planes (instead of only the green one) is that we want to avoid using the "epsilon" in the > or < constrains (more details [here](https://www.joyofdata.de/blog/testing-linear-separability-linear-programming-r-glpk/#crayon-5fabe3cf5c0d3782979776:~:text=The%20conditions%20of%20a%20linear%20program,lets%20transform%20(1)%20and%20(2)%20appropriately%3A))
 ![](./imgs/details.png) 
 
 ## Credits

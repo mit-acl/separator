@@ -43,5 +43,8 @@ find_package(catkin REQUIRED COMPONENTS separator)
 
 Example: see test.cpp
 
+## Details
+![](./imgs/details.png) 
+
 ## Credits
 Part of the code is based on the ACL [motoralloc library](https://gitlab.com/mit-acl/creare-labdrone/motoralloc).

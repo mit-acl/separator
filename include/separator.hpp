@@ -27,6 +27,10 @@ public:
                   const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsA,
                   const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsB);
 
+  long int getNumOfLPsRun();
+
+  double meanSolveTimeMs();
+
 private:
   glp_prob* lp_;
   int ia_[10000], ja_[10000];  // TODO
@@ -36,6 +40,9 @@ private:
   double weight_n3_ = 1.0;
 
   glp_smcp params_;
+
+  long int num_of_LPs_run_ = 0;
+  double mean_comp_time_ms_;
 };
 
 }  // namespace separator

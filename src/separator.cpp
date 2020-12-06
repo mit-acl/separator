@@ -29,6 +29,16 @@ Separator::Separator()  // double weight_n1, double weight_n2, double weight_n3
   weight_n3_ = 0.0;
 };
 
+long int Separator::getNumOfLPsRun()
+{
+  return num_of_LPs_run_;
+}
+
+double Separator::meanSolveTimeMs()
+{
+  return mean_comp_time_ms_;
+}
+
 bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const std::vector<Eigen::Vector3d>& pointsA,
                            const std::vector<Eigen::Vector3d>& pointsB)
 {
@@ -52,6 +62,8 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
                            const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsA,
                            const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsB)
 {
+  auto start_time = std::chrono::high_resolution_clock::now();
+
   // std::cout << "pointsA_matrix.cols()=" << pointsA.cols() << std::endl;
   // std::cout << "pointsB_matrix.cols()=" << pointsB.cols() << std::endl;
 
@@ -206,6 +218,17 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
   // std::cout << "solutionN.norm()=" << solutionN.norm() << std::endl;
 
   // bool degenerateSolution = (solutionN.norm() < 0.000001);  // solution is [0 0 0]
+  num_of_LPs_run_++;  // Now num_of_LPs_run_ counts also the last LP run
+  double total_time_us =
+      (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start_time))
+          .count();
+
+  // std::cout << "total_time_us LP =" << total_time_us << "us" << std::endl;
+  // std::cout << "mean comp time LP =" << mean_comp_time_ms_ * 1000 << "us" << std::endl;
+  // std::cout << "num_of_LPs_run_ LP =" << num_of_LPs_run_ << std::endl;
+
+  // https://math.stackexchange.com/a/22351
+  mean_comp_time_ms_ = mean_comp_time_ms_ + (total_time_us / 1e3 - mean_comp_time_ms_) / num_of_LPs_run_;
 
   if ((status == GLP_OPT || status == GLP_FEAS))  //&& !degenerateSolution
   {

@@ -6,6 +6,6 @@
 
 #else
 
-#include "separator_gurobirrr.hpp"
+#include "separator_gurobi.hpp"
 
 #endif

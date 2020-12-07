@@ -12,10 +12,8 @@
 
 #include <chrono>
 
-#include "separator.hpp"
+#include "separator_glpk.hpp"
 #include <iostream>
-
-#define M_PI 3.14159265358979323846
 
 namespace separator
 {
@@ -23,10 +21,6 @@ Separator::Separator()  // double weight_n1, double weight_n2, double weight_n3
 {
   glp_init_smcp(&params_);
   params_.msg_lev = 1;  // 1=no output.  GLP_MSG_ALL;
-
-  weight_n1_ = 0.0;
-  weight_n2_ = 0.0;
-  weight_n3_ = 0.0;
 };
 
 long int Separator::getNumOfLPsRun()
@@ -107,15 +101,15 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
   // weights
   glp_set_col_name(lp_, 1, "n1");
   glp_set_col_bnds(lp_, 1, GLP_FR, 0.0, 0.0);  // Free
-  glp_set_obj_coef(lp_, 1, weight_n1_);        // weight on n1
+  glp_set_obj_coef(lp_, 1, weight_n0_);        // weight on n1
 
   glp_set_col_name(lp_, 2, "n2");
   glp_set_col_bnds(lp_, 2, GLP_FR, 0.0, 0.0);  // Free
-  glp_set_obj_coef(lp_, 2, weight_n2_);        // weight on n2
+  glp_set_obj_coef(lp_, 2, weight_n1_);        // weight on n2
 
   glp_set_col_name(lp_, 3, "n3");
   glp_set_col_bnds(lp_, 3, GLP_FR, 0.0, 0.0);  // Free
-  glp_set_obj_coef(lp_, 3, weight_n3_);        // weight on n3
+  glp_set_obj_coef(lp_, 3, weight_n2_);        // weight on n3
 
   glp_set_col_name(lp_, 4, "d");
   glp_set_col_bnds(lp_, 4, GLP_FR, 0.0, 0.0);  // Free
@@ -154,14 +148,8 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
   // glp_write_lp(lp_, NULL, "/home/jtorde/Desktop/ws/src/faster/faster/my_model.txt");
 
   /* solve problem */
-  // auto start = std::chrono::high_resolution_clock::now();
-  glp_simplex(lp_, &params_);
-  // auto elapsed = std::chrono::high_resolution_clock::now() - start;
-  // std::cout << "Solving an LP took " << std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() /
-  // 1000.0
-  //           << " ms" << std::endl;
 
-  // std::cout << std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000.0 << std::endl;
+  glp_simplex(lp_, &params_);
 
   /* recover and display results */
   double z = glp_get_obj_val(lp_);
@@ -223,9 +211,9 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
       (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start_time))
           .count();
 
-  // std::cout << "total_time_us LP =" << total_time_us << "us" << std::endl;
-  // std::cout << "mean comp time LP =" << mean_comp_time_ms_ * 1000 << "us" << std::endl;
-  // std::cout << "num_of_LPs_run_ LP =" << num_of_LPs_run_ << std::endl;
+  std::cout << "total_time_us LP =" << total_time_us << "us" << std::endl;
+  std::cout << "mean comp time LP =" << mean_comp_time_ms_ * 1000 << "us" << std::endl;
+  std::cout << "num_of_LPs_run_ LP =" << num_of_LPs_run_ << std::endl;
 
   // https://math.stackexchange.com/a/22351
   mean_comp_time_ms_ = mean_comp_time_ms_ + (total_time_us / 1e3 - mean_comp_time_ms_) / num_of_LPs_run_;

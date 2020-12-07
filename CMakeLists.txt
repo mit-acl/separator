@@ -4,48 +4,103 @@ project(separator)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
+option(USE_GLPK "Use GLPK as the solver" ON)
+
+if (USE_GLPK)
+  add_definitions(-DUSE_GLPK_HPP)
+endif()
+
+
 find_package(catkin REQUIRED)
 find_package( Eigen3 REQUIRED )
 include_directories(${EIGEN3_INCLUDE_DIR})
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-#
-# Download GLPK
-#
+set(CMAKE_BUILD_TYPE Release) #From terminal: catkin config -DCMAKE_BUILD_TYPE=Release (or RelWithDebInfo)
 
-set(GLPK_DIR ${CMAKE_CURRENT_BINARY_DIR}/glpk-download)
+if(USE_GLPK)
+		# Download GLPK
 
-# Download GLPK
-configure_file(
-  "${CMAKE_MODULE_PATH}/glpk.cmake.in"
-  "${GLPK_DIR}/CMakeLists.txt"
-  IMMEDIATE @ONLY)
+		set(GLPK_DIR ${CMAKE_CURRENT_BINARY_DIR}/glpk-download)
 
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${GLPK_DIR})
-execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${GLPK_DIR})
+		# Download GLPK
+		configure_file(
+		  "${CMAKE_MODULE_PATH}/glpk.cmake.in"
+		  "${GLPK_DIR}/CMakeLists.txt"
+		  IMMEDIATE @ONLY)
 
-# For convenience (link to static library)
-set(GLPK_INCLUDE_DIRS ${GLPK_DIR}/install/include)
-set(GLPK_LIBS -L${GLPK_DIR}/install/lib;libglpk.a)
+		execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${GLPK_DIR})
+		execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${GLPK_DIR})
+
+		# For convenience (link to static library)
+		set(GLPK_INCLUDE_DIRS ${GLPK_DIR}/install/include)
+		set(GLPK_LIBS -L${GLPK_DIR}/install/lib;libglpk.a)
+
+		catkin_package(
+		    INCLUDE_DIRS include ${catkin_INCLUDE_DIRS} ${GLPK_INCLUDE_DIRS} 
+		    LIBRARIES separator)
+
+		include_directories( include ${catkin_INCLUDE_DIRS} ${GLPK_INCLUDE_DIRS})
+
+		add_library(separator SHARED src/separator_glpk.cpp)
+		target_compile_definitions(separator PUBLIC USE_GLPK_HPP)
+		target_link_libraries(separator ${catkin_LIBRARIES} ${GLPK_LIBS})
+		add_dependencies(separator ${separator_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+		
+
+else() #If you don't wanna use GLPK
+
+		list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+		find_package(GUROBI REQUIRED)
+
+		if(GUROBI_FOUND)
+		  message(STATUS "GUROBI FOUND")
+		else(GUROBI_FOUND)
+		  message(FATAL_ERROR "GUROBI NOT FOUND!")
+		endif(GUROBI_FOUND)
+
+		FILE(GLOB GurobiSOFiles $ENV{GUROBI_HOME}/lib/libgurobi*[0-9].so) #files that are start with libgurobi and end with number.so
+		set(GUROBI_LIBRARIES "$ENV{GUROBI_HOME}/lib/libgurobi_c++.a;${GurobiSOFiles};$ENV{GUROBI_HOME}/lib/" )
+
+		catkin_package(
+		    INCLUDE_DIRS include ${catkin_INCLUDE_DIRS} ${GUROBI_INCLUDE_DIRS} 
+		    LIBRARIES separator)
+
+		include_directories( include ${catkin_INCLUDE_DIRS} ${GUROBI_INCLUDE_DIRS})
+
+		add_library(separator SHARED src/separator_gurobi.cpp)
+		target_link_libraries(separator ${catkin_LIBRARIES} ${GUROBI_LIBRARIES})
+		add_dependencies(separator ${separator_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+endif()
 
 ###############################################################################
 
-catkin_package(
-    INCLUDE_DIRS include ${GLPK_INCLUDE_DIRS}
-    LIBRARIES separator
-)
 
-include_directories(
-	include
-    ${GLPK_INCLUDE_DIRS}
-	${catkin_INCLUDE_DIRS}
-)
 
-add_library(separator SHARED src/separator.cpp)
-target_link_libraries(separator ${catkin_LIBRARIES} ${GLPK_LIBS} m)
-add_dependencies(separator ${separator_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# ####################################################
 
+
+
+
+
+# # include_directories(
+# # 	include
+# #     ${GLPK_INCLUDE_DIRS}
+# # 	${catkin_INCLUDE_DIRS}
+# # 	${GUROBI_INCLUDE_DIRS}
+# # )
+
+
+
+# # add_library(separator SHARED src/separator.cpp)
+# # target_link_libraries(separator ${catkin_LIBRARIES} ${GLPK_LIBS} m)
+# # add_dependencies(separator ${separator_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+# add_library(separator SHARED src/separator_gurobi.cpp)
+# target_link_libraries(separator ${catkin_LIBRARIES} ${GLPK_LIBS} ${GUROBI_LIBRARIES})
+# add_dependencies(separator ${separator_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 add_executable(test_separator src/test_separator.cpp)

@@ -9,7 +9,7 @@ One possible application of this library is to test if two polyhedra are in coll
 
 ## Citation
 
-When using this library, please cite this paper (to appear):
+When using this library, please cite [MADER: Trajectory Planner in Multi-Agent and Dynamic Environments](https://arxiv.org/abs/2010.11061):
 
 ```bibtex
 @article{tordesillas2020mader,

@@ -4,7 +4,7 @@ project(separator)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
-option(USE_GLPK "Use GLPK as the solver" OFF) #if OFF, then it will use Gurobi as the solver
+option(USE_GLPK "Use GLPK as the solver" ON) #if OFF, then it will use Gurobi as the solver
 
 
 find_package(catkin REQUIRED)

@@ -7,6 +7,8 @@ This library allows you to solve the Linear Program to obtain the plane that sep
 
 One possible application of this library is to test if two polyhedra are in collision or not (by simply checking if the LP problem that separates theirs vertexes is feasible or not). In case of feasibility, a plane that separates these polyhedra will also be returned
 
+## Available solvers
+You can compile this library either with Gurobi or with GLPK (by simply changing the option `GLPK` to `ON` or `OFF`). If you set it to `ON`, the `GLPK` solver will be used, and, if not currently installed, it will be downloaded and installed automatically in your computer. If you set it to `OFF`, you need to have the [Gurobi Optimizer](https://www.gurobi.com/products/gurobi-optimizer/) installed beforehand. Have a look at [this section](#issues-when-installing-gurobi) if you have any issues.
 
 ## Citation
 
@@ -46,6 +48,22 @@ Example: see test_separator.cpp
 ## Details
 The reason behind the two planes (instead of only the green one) is that we want to avoid using the "epsilon" in the > or < constrains (more details [here](https://www.joyofdata.de/blog/testing-linear-separability-linear-programming-r-glpk/#crayon-5fabe3cf5c0d3782979776:~:text=The%20conditions%20of%20a%20linear%20program,lets%20transform%20(1)%20and%20(2)%20appropriately%3A))
 ![](./imgs/details.png) 
+
+## Issues when installing Gurobi:
+
+If you find the error:
+```
+“gurobi_continuous.cpp:(.text.startup+0x74): undefined reference to
+`GRBModel::set(GRB_StringAttr, std::__cxx11::basic_string<char,
+std::char_traits<char>, std::allocator<char> > const&)'”
+```
+The solution is:
+
+```bash
+cd /opt/gurobi800/linux64/src/build  #Note that the name of the folder gurobi800 changes according to the Gurobi version
+sudo make
+sudo cp libgurobi_c++.a ../../lib/
+```
 
 ## Credits
 Part of the code is based on the ACL [motoralloc library](https://gitlab.com/mit-acl/creare-labdrone/motoralloc).

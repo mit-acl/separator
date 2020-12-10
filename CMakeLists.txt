@@ -4,11 +4,7 @@ project(separator)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
-option(USE_GLPK "Use GLPK as the solver" ON)
-
-if (USE_GLPK)
-  add_definitions(-DUSE_GLPK_HPP)
-endif()
+option(USE_GLPK "Use GLPK as the solver" OFF) #if OFF, then it will use Gurobi as the solver
 
 
 find_package(catkin REQUIRED)
@@ -20,8 +16,8 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set(CMAKE_BUILD_TYPE Release) #From terminal: catkin config -DCMAKE_BUILD_TYPE=Release (or RelWithDebInfo)
 
 if(USE_GLPK)
-		# Download GLPK
 
+		# Download GLPK
 		set(GLPK_DIR ${CMAKE_CURRENT_BINARY_DIR}/glpk-download)
 
 		# Download GLPK
@@ -44,7 +40,6 @@ if(USE_GLPK)
 		include_directories( include ${catkin_INCLUDE_DIRS} ${GLPK_INCLUDE_DIRS})
 
 		add_library(separator SHARED src/separator_glpk.cpp)
-		target_compile_definitions(separator PUBLIC USE_GLPK_HPP)
 		target_link_libraries(separator ${catkin_LIBRARIES} ${GLPK_LIBS})
 		add_dependencies(separator ${separator_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 		
@@ -75,34 +70,9 @@ else() #If you don't wanna use GLPK
 
 endif()
 
-###############################################################################
-
-
-
-# ####################################################
-
-
-
-
-
-# # include_directories(
-# # 	include
-# #     ${GLPK_INCLUDE_DIRS}
-# # 	${catkin_INCLUDE_DIRS}
-# # 	${GUROBI_INCLUDE_DIRS}
-# # )
-
-
-
-# # add_library(separator SHARED src/separator.cpp)
-# # target_link_libraries(separator ${catkin_LIBRARIES} ${GLPK_LIBS} m)
-# # add_dependencies(separator ${separator_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-# add_library(separator SHARED src/separator_gurobi.cpp)
-# target_link_libraries(separator ${catkin_LIBRARIES} ${GLPK_LIBS} ${GUROBI_LIBRARIES})
-# add_dependencies(separator ${separator_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
 
 add_executable(test_separator src/test_separator.cpp)
 target_link_libraries(test_separator PUBLIC separator)
 add_dependencies(test_separator separator)
+
+unset(USE_GLPK CACHE) # To avoid https://stackoverflow.com/questions/22481647/cmake-if-else-with-option

@@ -1,11 +1,41 @@
+/* ----------------------------------------------------------------------------
+ * Copyright 2020, Jesus Tordesillas Torres, Aerospace Controls Laboratory
+ * Massachusetts Institute of Technology
+ * All Rights Reserved
+ * Authors: Jesus Tordesillas, et al.
+ * See LICENSE file for the license information
+ * -------------------------------------------------------------------------- */
+
 #pragma once
 
-#ifdef USE_GLPK_HPP
+#include <array>
+#include <vector>
+#include <Eigen/Dense>
+#include <memory>
 
-#include "separator_glpk.hpp"
+namespace separator
+{
+class Separator
+{
+public:
+  Separator();
+  ~Separator();
 
-#else
+  bool solveModel(Eigen::Vector3d& solution, double& d, const std::vector<Eigen::Vector3d>& pointsA,
+                  const std::vector<Eigen::Vector3d>& pointsB);
 
-#include "separator_gurobi.hpp"
+  bool solveModel(Eigen::Vector3d& solutionN, double& solutionD,
+                  const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsA,
+                  const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsB);
 
-#endif
+  long int getNumOfLPsRun();
+
+  double meanSolveTimeMs();
+
+private:
+  // PImpl idiom, https://www.geeksforgeeks.org/pimpl-idiom-in-c-with-examples/
+  struct PImpl;
+  std::unique_ptr<PImpl> pm_;  // Opaque pointer
+};
+
+}  // namespace separator

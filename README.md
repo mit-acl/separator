@@ -7,11 +7,6 @@ This library allows you to solve the Linear Program to obtain the plane that sep
 
 One possible application of this library is to test if two polyhedra are in collision or not (by simply checking if the LP problem that separates theirs vertexes is feasible or not). In case of feasibility, a plane that separates these polyhedra will also be returned
 
-## Available solvers
-You can compile this library either with [Gurobi](https://www.gurobi.com/products/gurobi-optimizer/) or with [GLPK](https://www.gnu.org/software/glpk/) by simply changing the option `USE_GLPK` in the `CMakeList.txt`:
-* If you set `USE_GLPK` to `ON`, the `GLPK` solver will be used, and, if not currently installed, it will be downloaded and installed automatically in your computer. 
-* If you set `USE_GLPK` to `OFF`, you need to have the [Gurobi Optimizer](https://www.gurobi.com/products/gurobi-optimizer/) installed beforehand (you can check that it is properly installed by typing `gurobi.sh` in the terminal). Have a look at [this section](#issues-when-installing-gurobi) if you have any issues during the installation/compilation.
-
 ## Citation
 
 When using this library, please cite this paper (to appear):
@@ -24,6 +19,13 @@ When using this library, please cite this paper (to appear):
   year={2020}
 }
 ```
+
+## Available solvers
+You can compile this library either with [Gurobi](https://www.gurobi.com/products/gurobi-optimizer/) or with [GLPK](https://www.gnu.org/software/glpk/) by simply changing the option `USE_GLPK` in the `CMakeList.txt`:
+* If you set `USE_GLPK` to `ON` (the default option), the [GLPK](https://www.gnu.org/software/glpk/) solver will be used, and, if not currently installed, it will be downloaded and installed automatically in your computer. 
+* If you set `USE_GLPK` to `OFF`, you need to have the [Gurobi Optimizer](https://www.gurobi.com/products/gurobi-optimizer/) installed beforehand (you can check that it is properly installed by typing `gurobi.sh` in the terminal). Have a look at [this section](#issues-when-installing-gurobi) if you have any issues during the installation/compilation.
+
+*Which solver is faster?* It depends on the exact problem you may want to solve. For the kind of LPs solved in [MADER](https://github.com/mit-acl/mader), GLPK runs faster. 
 
 ## Instructions
 

@@ -76,7 +76,7 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
 {
   auto start_time = std::chrono::high_resolution_clock::now();
 
-  std::cout << "Using GLPK" << std::endl;
+  // std::cout << "Using GLPK" << std::endl;
 
   // std::cout << "pointsA_matrix.cols()=" << pointsA.cols() << std::endl;
   // std::cout << "pointsB_matrix.cols()=" << pointsB.cols() << std::endl;
@@ -229,9 +229,9 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
       (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start_time))
           .count();
 
-  std::cout << "total_time_us LP =" << total_time_us << "us" << std::endl;
-  std::cout << "mean comp time LP =" << pm_->mean_comp_time_ms * 1000 << "us" << std::endl;
-  std::cout << "pm_->num_of_LPs_run LP =" << pm_->num_of_LPs_run << std::endl;
+  // std::cout << "total_time_us LP =" << total_time_us << "us" << std::endl;
+  // std::cout << "mean comp time LP =" << pm_->mean_comp_time_ms * 1000 << "us" << std::endl;
+  // std::cout << "pm_->num_of_LPs_run LP =" << pm_->num_of_LPs_run << std::endl;
 
   // https://math.stackexchange.com/a/22351
   pm_->mean_comp_time_ms =

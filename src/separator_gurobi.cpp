@@ -166,9 +166,9 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
   pm_->mean_comp_time_ms =
       pm_->mean_comp_time_ms + (total_time_us / 1e3 - pm_->mean_comp_time_ms) / pm_->num_of_LPs_run;
 
-  std::cout << "total_time_us LP =" << total_time_us << "us" << std::endl;
-  std::cout << "mean comp time LP =" << pm_->mean_comp_time_ms * 1000 << "us" << std::endl;
-  std::cout << "pm_->num_of_LPs_run LP =" << pm_->num_of_LPs_run << std::endl;
+  // std::cout << "total_time_us LP =" << total_time_us << "us" << std::endl;
+  // std::cout << "mean comp time LP =" << pm_->mean_comp_time_ms * 1000 << "us" << std::endl;
+  // std::cout << "pm_->num_of_LPs_run LP =" << pm_->num_of_LPs_run << std::endl;
 
   // int number_of_stored_solutions = pm_->model.get(GRB_IntAttr_SolCount);
   // || optimstatus == GRB_TIME_LIMIT ||
@@ -186,7 +186,7 @@ bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD,
   }
   else
   {
-    std::cout << "Gurobi (LP) failed to find a solution" << std::endl;
+    // std::cout << "Gurobi (LP) failed to find a solution" << std::endl;
     return false;
   }
 };

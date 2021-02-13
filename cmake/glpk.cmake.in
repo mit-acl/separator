@@ -3,7 +3,7 @@ project(glpk-download NONE)
 
 include(ExternalProject)
 ExternalProject_Add(glpk
-    URL                 "ftp://ftp.gnu.org/gnu/glpk/glpk-4.65.tar.gz"
+    URL                 "https://ftp.gnu.org/gnu/glpk/glpk-4.65.tar.gz"
     SOURCE_DIR          "${CMAKE_CURRENT_BINARY_DIR}/src"
     BINARY_DIR          "${CMAKE_CURRENT_BINARY_DIR}/build"
     # with -fPIC since we are linking this static library to a shared library, use pic

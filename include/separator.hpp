@@ -28,9 +28,11 @@ public:
                   const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsA,
                   const Eigen::Matrix<double, 3, Eigen::Dynamic>& pointsB);
 
-  long int getNumOfLPsRun();
+  int getNumOfLPsRun();
 
-  double meanSolveTimeMs();
+  double getMeanTimeSolveLPMs();
+
+  void resetNumLPsAndTime();
 
 private:
   // PImpl idiom, https://www.geeksforgeeks.org/pimpl-idiom-in-c-with-examples/

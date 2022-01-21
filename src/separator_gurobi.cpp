@@ -27,8 +27,8 @@ struct Separator::PImpl
   double weight_n1 = 0.0;
   double weight_n2 = 0.0;
 
-  long int num_of_LPs_run = 0;
-  double mean_comp_time_ms;
+  int num_of_LPs_run = 0;
+  double mean_comp_time_ms = 0.0;
 
   double epsilon = 1.0;
 
@@ -51,16 +51,24 @@ Separator::Separator()  // double weight_n1, double weight_n2, double weight_n3
   pm_->model.set("OutputFlag", std::to_string(0));  // 1 if you want verbose, 0 if not
 
   pm_->epsilon = 1.0;
+
+  resetNumLPsAndTime();
 };
 
-long int Separator::getNumOfLPsRun()
+int Separator::getNumOfLPsRun()
 {
   return pm_->num_of_LPs_run;
 }
 
-double Separator::meanSolveTimeMs()
+double Separator::getMeanTimeSolveLPMs()
 {
   return pm_->mean_comp_time_ms;
+}
+
+void Separator::resetNumLPsAndTime()
+{
+  pm_->num_of_LPs_run = 0;
+  pm_->mean_comp_time_ms = 0.0;
 }
 
 bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const std::vector<Eigen::Vector3d>& pointsA,

@@ -28,8 +28,8 @@ struct Separator::PImpl
 
   glp_smcp params;
 
-  long int num_of_LPs_run = 0;
-  double mean_comp_time_ms;
+  int num_of_LPs_run = 0;
+  double mean_comp_time_ms = 0.0;
 };
 
 Separator::~Separator() = default;
@@ -39,16 +39,23 @@ Separator::Separator()  // double weight_n0, double weight_n1, double weight_n2
   pm_ = std::unique_ptr<PImpl>(new PImpl());
   glp_init_smcp(&pm_->params);
   pm_->params.msg_lev = 1;  // 1=no output.  GLP_MSG_ALL;
+  resetNumLPsAndTime();
 };
 
-long int Separator::getNumOfLPsRun()
+int Separator::getNumOfLPsRun()
 {
   return pm_->num_of_LPs_run;
 }
 
-double Separator::meanSolveTimeMs()
+double Separator::getMeanTimeSolveLPMs()
 {
   return pm_->mean_comp_time_ms;
+}
+
+void Separator::resetNumLPsAndTime()
+{
+  pm_->num_of_LPs_run = 0;
+  pm_->mean_comp_time_ms = 0.0;
 }
 
 bool Separator::solveModel(Eigen::Vector3d& solutionN, double& solutionD, const std::vector<Eigen::Vector3d>& pointsA,
